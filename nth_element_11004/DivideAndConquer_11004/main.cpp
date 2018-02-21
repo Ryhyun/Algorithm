@@ -59,6 +59,7 @@ int main() {
         scanf("%d",&numberVector[i]);
     }
     //DAC( 0, n-1);
+    
     nth_element(numberVector,numberVector + k -1  , numberVector+ n);
     cout<< numberVector[k-1];
     
