@@ -27,7 +27,7 @@ int result;
  */
 int BFS(int start){
     queue<int> s;
-    int visited[10001]= {0,};i
+    int visited[10001]= {0,};
     s.push(start);
     while( !s.empty()){
         int temp;
