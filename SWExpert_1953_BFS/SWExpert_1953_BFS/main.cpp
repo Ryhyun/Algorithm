@@ -1,8 +1,9 @@
-// DFS
+// BFS
 
 #include <iostream>
 
 #include <queue>
+#include <algorithm>
 
 
 
@@ -74,14 +75,14 @@ bool isConnect(int k, int v) {
         case 5:
             if (v == 0)
                 return true;
-
+            
             else if (v == 1)
                 return true;
             else if (v == 2)
                 return false;
             else
                 return false;
-                
+            
             break;
         case 6:
             if (v == 0)
@@ -104,7 +105,7 @@ bool isConnect(int k, int v) {
                 return true;
             else
                 return true;
-
+            
             break;
             
         default:
@@ -119,30 +120,44 @@ bool isConnect(int k, int v) {
 
 
 
-void dfs(int sN, int sM, int depth) {
-
-    for (int i = 0; i < 4; i++) {
-        int nextN = sN + moveN[i];
-        int nextM = sM + moveM[i];
-        if (nextN < 0 || nextN >= N || nextM < 0 || nextM >= M) {
-            continue;
+void bfs(int sN, int sM) {
+    int depth = 1;
+    queue<pair<int,int> > q;
+    q.push(make_pair(sN,sM));
+    q.push(make_pair(100,100));
+    
+    while( !q.empty()){
+    
+        int n =q.front().first;
+        int m =q.front().second;
+        
+        if( n == 100 && m ==100 && q.back().first != 100){
+            depth++;
+            q.pop();
+            q.push(make_pair(100,100));
+            //cout<<depth<<endl;
+        }
+        else{
+            q.pop();
         }
         
-        if (arr[nextN][nextM] != 0 && isConnect(arr[sN][sM], i) && isConnect(arr[nextN][nextM], (i + 2) % 4) && visited[nextN][nextM] == 0 && depth < L) {
-            visited[nextN][nextM] = depth;
-            //cout << depth << " : " << nextN << " " << nextM << endl;
-            result++;
-            
-            dfs(nextN, nextM, depth + 1);
-            
-        }
-        else if(arr[nextN][nextM] != 0 && isConnect(arr[sN][sM], i) && isConnect(arr[nextN][nextM], (i + 2) % 4) && visited[nextN][nextM] > 0 && depth < L){
-            if( visited[nextN][nextM] > depth){
-                visited[nextN][nextM] = depth;
-                dfs(nextN, nextM, depth + 1);
-                
+        
+        for (int i = 0; i < 4; i++) {
+            int nextN = n + moveN[i];
+            int nextM = m + moveM[i];
+            if (nextN < 0 || nextN >= N || nextM < 0 || nextM >= M) {
+                continue;
             }
+        
+            if (arr[nextN][nextM] != 0 && isConnect(arr[n][m], i) && isConnect(arr[nextN][nextM], (i + 2) % 4) && visited[nextN]  [nextM] == 0 && depth < L ) {
+                //cout<< nextN<<" "<< nextM <<endl;
+                visited[nextN][nextM] = 1;
+                q.push(make_pair(nextN,nextM));
             
+                result++;
+
+            }
+        
         }
         
     }
@@ -171,7 +186,7 @@ int main(void) {
         
         visited[R][C] = 1;
         
-        dfs(R, C, 1);
+        bfs(R, C);
         
         
         
