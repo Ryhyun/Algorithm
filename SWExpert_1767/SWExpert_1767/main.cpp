@@ -1,213 +1,215 @@
+
+ 
 #include <iostream>
-#include <vector>
+#include <vector> 
+
 using namespace std;
 int N;
-int bigP;
-int totalP;
-int smallV;
-vector<pair<int,int> > a;
+int totalV;
+int result;
+int tempC;
+int arr[13][13];
 
 
-typedef int(*tempA)[13];
+vector<pair<int, int> > vec;
 
-int chkline(int arr[13][13], int pi, int pj, int pk) {
-    
-    if (pk == 0) {
-        for (int i = pi + 1; i < N ; i++) {
-            if (arr[i][pj] != 0) {
-                return 0;
-            }
-        }
-        return 1;
-    }
-    
-    else if (pk == 1) {
-        for (int j = pj + 1; j < N ; j++) {
-            if (arr[pi][j] != 0) {
-                return 0;
-            }
-        }
-        return 1;
-    }
-    
-    else if (pk == 2) {
-        for (int i = pi - 1; i >= 0 ; i--) {
-            if (arr[i][pj] != 0) {
-                return 0;
-            }
-        }
-        return 1;
-    }
-    
-    else {
-        for (int j = pj - 1; j >=0 ; j--) {
-            if (arr[pi][j] != 0) {
-                return 0;
-            }
-        }
-        return 1;
-    }
-    
-    return 0;
-}
 
-tempA drawline(int arr[13][13], int pi, int pj, int pk) {
+void recursion(int pArr[13][13], int c, int count, vector<pair<int ,int> > tV){
+    int tempArr[13][13] ={0,};
+    vector<pair<int, int> >::iterator veci;
+    vector<pair<int, int> > tempV;
     
-    int ttemparr[13][13] = { 0, };
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            ttemparr[i][j] = arr[i][j];
+    
+    
+    for(int i=0 ;i< N;i++){
+        for( int j=0; j<N;j++){
+            tempArr[i][j] = pArr[i][j];
+            
         }
     }
-    
-    // æ∆∑°
-    if (pk == 0) {
-        for (int i = pi + 1; i < N; i++) {
-            ttemparr[i][pj] = 2;
-        }
+
+    for( veci = tV.begin(); veci != tV.end(); veci++){
+        tempArr[ veci->first][veci->second] = 2;
+        count++;
     }
-    //ø¿∏•¬
-    else if (pk == 1) {
-        for (int j = pj + 1; j < N; j++) {
-            ttemparr[pi][j] = 2;
+    tV.clear();
+    
+    if( c == totalV){
+        if(  tempArr[vec[0].first][vec[0].second] <= tempC   ){
+            tempC = tempArr[vec[0].first][vec[0].second];
+            if( count < result   ){
+                result = count;
+
+            }
+            
         }
         
-    }
-    //¿ß
-    else if (pk == 2) {
-        for (int i = pi - 1; i >= 0; i--) {
-            ttemparr[i][pj] = 2;
-        }
-    }
-    //øﬁ¬
-    else {
-        for (int j = pj - 1; j >= 0; j--) {
-            ttemparr[pi][j] = 2;
-        }
-    }
-    return ttemparr;
-}
-
-
-void recursion(int arr[13][13] , int visited[13][13],int cnt) {
-    int temparr[13][13] = { 0, };
-    int tempvisited[13][13] = { 0, };
-    vector<pair<int,int> >::iterator ai;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            temparr[i][j] = arr[i][j];
-            tempvisited[i][j] = visited[i][j];
-        }
+        return;
     }
     /*
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            cout << temparr[i][j] << " ";
+
+    cout<< c<<" "<< vec[c].first<<" "<<vec[c].second<<" "<<count<<endl;
+    for( int i = 0 ; i<N ;i++){
+        for(int j=0; j<N;j++){
+            cout<< tempArr[i][j] <<" ";
         }
         cout<<endl;
     }
     cout<<endl;
-     */
-    if ( bigP <= cnt  and cnt > totalP-1) {
-        bigP = cnt;
-        int dcnt = 0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                //cout << temparr[i][j] << " ";
-                if (temparr[i][j] == 2) {
-                    dcnt++;
-                }
-                
-            }
-            //cout << endl;
-        }
-        //cout << dcnt << endl;
-        if (smallV > dcnt) {
-            smallV = dcnt;
-        }
-        
-        
+*/
+    bool edgeChk = false;
+    if( vec[c].first == 0 || vec[c].second ==0 || vec[c].first == N- 1 || vec[c].second == N-1 ){
+        edgeChk = true;
     }
-    //cout << endl;
-    //for (int i = 0; i < N; i++) {
-     //   for (int j = 0; j < N; j++) {
-    for( ai = a.begin(); ai != a.end(); ai++){
-        int i = ai->first;
-        int j=  ai->second;
-            if ( i == 0 || j == 0 || i == (N - 1) || j == (N - 1)) {
-                if (temparr[i][j] == 1 && tempvisited[i][j] != 1) {
-                    tempvisited[i][j] = 1;
-                    cnt++;
-                    continue;
-                }
+    
+    if(edgeChk == true){
+        tempV.clear();
+        recursion( tempArr, c+1, count, tempV);
+    }
+    
+    else{
+        bool chkR = false;  //Right
+        bool chkD = false;  //Down
+        bool chkL = false;  //Left
+        bool chkT = false ; //Top
+        
+        
+        // Right
+        for(int i= vec[c].second +1  ;  i< N; i++) {
+            if( tempArr[vec[c].first][i] != 0  ){
+                chkR = true;
+                break;
+             
             }
-            else {
-                if (temparr[i][j] == 1 && tempvisited[i][j] != 1) {
-                    tempvisited[i][j] = 1;
-                    //cout << i << " " << j << " " << cnt << endl;
-                    bool chk = false;
-                    for (int k = 0; k < 4; k++) {
-                        if (chkline(temparr, i, j, k)== 1 ){
-                            chk = true;
-                            tempA a = drawline(temparr, i, j, k);
-                            int ta[13][13] ={0, };
-                            for (int ii = 0; ii < N; ii++) {
-                                for (int jj = 0; jj < N; jj++) {
-                                    ta[ii][jj] = a[ii][jj];
-                                }
-                            }
-                            recursion(ta, tempvisited, cnt + 1);
-                        }
-                        else {
-                            continue;
-                        }
-                    }
-                    if (chk == false) {
-                        return;
-                    }
-                    
-                }
-            }
+            else
+                tempV.push_back(make_pair(vec[c].first, i));
+        }
+        // Right
+        if(chkR == true ){
+            tempV.clear();
             
         }
+        else{
+            recursion(tempArr, c+1, count, tempV);
+            tempV.clear();
+        }
+
+        // Down
+        for(int i= vec[c].first+1  ;  i< N; i++) {
+            if( tempArr[i][vec[c].second] != 0  ){
+                chkD = true;
+                break;
+                
+            }
+            else{
+                tempV.push_back(make_pair(i,vec[c].second));
+            }
+
+        }
+        // down
+        if(chkD == true){
+            tempV.clear();
+            
+        }
+        else{
+            recursion(tempArr, c+1, count, tempV);
+            tempV.clear();
+        }
+        
+        // Left
+        for(int i= vec[c].second -1   ;  i >= 0 ; i--) {
+            if( tempArr[vec[c].first][i] != 0  ){
+                chkL = true;
+                break;
+            }
+            else
+                tempV.push_back(make_pair(vec[c].first, i));
+
+        }
+        // Left
+        if(chkL == true){
+            tempV.clear();
+            
+        }
+        else{
+            recursion(tempArr, c+1, count, tempV);
+            tempV.clear();
+        }
+        // Top
+        for(int i= vec[c].first -1   ;  i >= 0 ; i--) {
+            if( tempArr[i][vec[c].second] != 0  ){
+               chkT = true;
+                break;
+                
+            }
+            else
+                tempV.push_back(make_pair(i,vec[c].second));
+            
+        }
+
+        // Top
+        if(chkT == true){
+            tempV.clear();
+        }
+        else{
+            recursion(tempArr, c+1, count, tempV);
+            tempV.clear();
+        }
+      
+       
+        if( chkR == true && chkD==true && chkL ==true && chkT == true){
+            tempArr[vec[0].first][vec[0].second]+= 2;
+            recursion(tempArr,c+1,count,tempV);
+        }
+     
+    }
+    
+    
     
     
 }
 
 
-int main(void) {
-    int totalN;
+
+int main(void){
+    int total_cnt;
     
-    cin >> totalN;
+    cin>>total_cnt;
     
     
-    for (int c = 1; c <= totalN; c++) {
-        cin >> N;
-        totalP = 0;
-        bigP = 0 ;
-        
-        a.clear();
-        int arr[13][13] = { 0, };
-    
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+    for(int casei =1 ;casei<= total_cnt; casei++){
+        totalV = 0 ;
+        vec.clear();
+        result = 1000 ;
+        tempC = 1000;
+        cin>> N;
+        for( int i=0 ; i<N; i++){
+            for(int j=0; j< N; j++){
+                arr[i][j] = 0 ;
                 cin >> arr[i][j];
-                a.push_back(pair<int,int>(i,j));
-                if (arr[i][j] == 1) {
-                    totalP++;
+                if( arr[i][j] == 1 ){
+                    vec.push_back(make_pair(i,j));
+                    totalV++;
                 }
             }
         }
-        int visited[13][13] = { 0, };
-    
-        smallV = 100;
-        recursion(arr, visited, 1);
-    
-        if (smallV == 100)
-            cout <<"#"<<c<< " 0" << endl;
-        else {
-            cout <<"#"<<c<<" "<< smallV << endl;
+        vector<pair<int, int> >::iterator veci;
+        /*
+        for( veci = vec.begin(); veci != vec.end(); veci++){
+            cout<< veci->first<<" "<<veci->second<<endl;
         }
+*/
+  //      cout<< totalV<<endl;
+        vector<pair<int,int> > a;
+        recursion(arr, 0, 0, a);
+        
+        
+        
+        cout<<"#"<<casei<<" "<<result<<endl;
+        
     }
+    
+    
+    
     return 0;
 }
